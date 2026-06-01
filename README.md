@@ -8,7 +8,7 @@ This repository contains a machine learning pipeline designed to predict 6 weeks
   - `train.csv` : Historical daily sales data.
   - `store.csv` : Static information about the stores (StoreType, Assortment, etc.).
 - `prepare.py` : Data cleaning and feature engineering module. Extracts time-series data and handles missing values.
-- `train_xgb.py` : The master controller script. Handles the validation split, One-Hot Encoding, model training, and evaluation.
+- `main.py` : The master controller script. Handles the validation split, One-Hot Encoding, model training, and evaluation.
 - `README.md` : Project documentation.
 
 ## 🛠️ Methodology & Technical Highlights
