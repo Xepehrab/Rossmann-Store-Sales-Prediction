@@ -1,0 +1,5 @@
+# --- Python Cache ---
+# Python creates these automatically to run faster. They shouldn't be shared.
+__pycache__/
+*.py[cod]
+*$py.class
