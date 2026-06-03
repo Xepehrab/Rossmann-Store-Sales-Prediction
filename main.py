@@ -36,6 +36,11 @@ y_train = np.log1p(train_df['Sales'])
 X_val = val_df.drop(columns=cols_to_drop)
 y_val = np.log1p(val_df['Sales'])
 
+# First 7 days per store have no lag yet — fill with 0
+if 'Sales_lag_7' in X_train.columns:
+    X_train['Sales_lag_7'] = X_train['Sales_lag_7'].fillna(0)
+    X_val['Sales_lag_7'] = X_val['Sales_lag_7'].fillna(0)
+
 # --- ONE-HOT ENCODING ---
 print("Encoding categorical variables...")
 # Identify the text columns that the model cannot read natively (Now including PromoInterval!)
@@ -68,7 +73,7 @@ print(f"Features ready. Training on {X_train.shape[1]} columns.")
 print("Initializing Random Forest Regressor...")
 rf_model = RandomForestRegressor(
     n_estimators=100, 
-    max_depth=15,       
+    max_depth=20,       
     random_state=42,    
     n_jobs=-1
 )
