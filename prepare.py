@@ -1,9 +1,9 @@
 import pandas as pd
 import numpy as np
 
-train_df = pd.read_csv("data/train.csv")
-test_df = pd.read_csv("data/test.csv")
-store_df = pd.read_csv("data/store.csv")
+# train_df = pd.read_csv("data/train.csv")
+# test_df = pd.read_csv("data/test.csv")
+# store_df = pd.read_csv("data/store.csv")
 
 def prepare_rossmann_data(train_df,store_df,is_train=True):
     """
@@ -21,7 +21,8 @@ def prepare_rossmann_data(train_df,store_df,is_train=True):
 
     print("Handling missing values...")
     # Assume missing competition distance means no nearby competitor
-    df['CompetitionDistance']=df['CompetitionDistance'].fillna((df['CompetitionDistance'])).max()
+    max_distance = df["CompetitionDistance"].max()
+    df["CompetitionDistance"] = df["CompetitionDistance"].fillna(max_distance)
 
 
     # Replace missing competition and promotion dates with 0
@@ -44,6 +45,12 @@ def prepare_rossmann_data(train_df,store_df,is_train=True):
 
 
     print("Calculating advanced duration features...")
+
+    #Calculating each store 7 days sales 
+    df = df.sort_values(by=['Store', 'Date'], ascending=True).reset_index(drop=True)
+    df['Sales_lag_7']=df.groupby('Store')["Sales"].shift(7)
+
+
     # How many months has the competition been open relative to the current row's date?
     df['CompetitionOpenMonths']=12*(df['Year']-df['CompetitionOpenSinceYear'])+ (df['Month']-df['CompetitionOpenSinceMonth']) 
 
@@ -53,11 +60,13 @@ def prepare_rossmann_data(train_df,store_df,is_train=True):
 
     #How many months has the continuous promotion (Promo2) been running?
     df['Promo2OpenMonths'] = 12 * (df['Year'] - df['Promo2SinceYear']) + (df ['WeekOfYear'] - df['Promo2SinceWeek']) / 4.0
+
     df.loc[df['Promo2SinceYear'] == 0, 'Promo2OpenMonths'] = 0
     df['Promo2OpenMonths'] = df['Promo2OpenMonths'].apply(lambda x: x if x > 0 else 0)
 
     #Convert StateHoliday to numeric/string
-    df['StateHoliday'] = df['StateHoliday'].astype(str).replace({'0': '0'})
+    df["StateHoliday"] = df["StateHoliday"].fillna("0").astype(str)
+    df["IsStateHoliday"] = (df["StateHoliday"] != "0").astype(int)
     
     
     
