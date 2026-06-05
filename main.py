@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np 
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.preprocessing  import OneHotEncoder
+from xgboost import XGBRegressor
 
 
 #Import custom dara preparatioin module 
@@ -70,23 +71,28 @@ X_val = pd.concat([X_val.drop(columns=categorical_cols), encoded_val_df], axis=1
 
 # --- MODEL TRAINING ---
 print(f"Features ready. Training on {X_train.shape[1]} columns.")
-print("Initializing Random Forest Regressor...")
-rf_model = RandomForestRegressor(
-    n_estimators=100, 
-    max_depth=20,       
-    random_state=42,    
+print("Initializing XGBRgressor...")
+
+model = XGBRegressor(
+      n_estimators=500,
+    learning_rate=0.05,
+    max_depth=8,
+    subsample=0.8,
+    colsample_bytree=0.8,
+    min_child_weight=5,
+    random_state=42,
     n_jobs=-1
 )
 
 print("Training the model... (This may take a few minutes)")
-rf_model.fit(X_train, y_train) 
+model.fit(X_train, y_train) 
 print("Training complete!")
 
 # --- EVALUATION ---
 print("Making predictions on the validation set...")
 
 # Generate predictions in log space
-val_predictions_log = rf_model.predict(X_val)
+val_predictions_log = model.predict(X_val)
 
 # Reverse the log transformation
 y_pred_actual = np.expm1(val_predictions_log)
