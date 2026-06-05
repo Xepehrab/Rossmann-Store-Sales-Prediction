@@ -19,7 +19,7 @@ Because retail sales are heavily dependent on time and seasonality, this project
 * **Strict Time-Series Validation:** Implements a custom chronological split that holds out the final 42 days of data. This perfectly simulates the Kaggle test environment and prevents future-data leakage (predicting the past using future knowledge).
 * **Target Transformation:** Trains the model on the logarithmic transformation of sales (`np.log1p`) to naturally optimize for the competition's percentage-based evaluation metric.
 * **Robust Categorical Encoding:** Utilizes an integrated `scikit-learn` One-Hot Encoding pipeline that strictly fits to the training data and safely transforms the validation set, ensuring no dimension-mismatch errors if new categories appear.
-* **Lightweight Architecture:** Uses a `RandomForestRegressor` and native standard libraries, keeping the environment lightweight and easy to reproduce without complex external dependencies.
+* **Lightweight Architecture:** Uses a `XGBRegressor` and native standard libraries, keeping the environment lightweight and easy to reproduce without complex external dependencies.
 
 ## ⚙️ Installation & Requirements
 
